@@ -46,6 +46,14 @@ namespace Infrastructure.Data
         {
             return await context.SaveChangesAsync() > 0;
         }
+        public async Task<int> CountAsync(ISpecification<T> specification)
+        {
+            var query = context.Set<T>().AsQueryable();
+
+            query = specification.ApplyCriteria(query);
+
+            return await query.CountAsync();
+        }
 
         private IQueryable<T> ApplySpecification(ISpecification<T> specification)
         {
