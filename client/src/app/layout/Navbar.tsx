@@ -32,7 +32,7 @@ type Props = {
 
 export default function Navbar({darkMode, toggleDarkMode}: Props) {
     return (
-        <AppBar position="fixed">
+        <AppBar position='fixed'>
             <Toolbar sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                 <Box sx={{display: 'flex', alignItems: 'center'}}>
                     <Typography component={NavLink} sx={navStyles} to='/' variant="h6">RE-STORE</Typography>
@@ -48,7 +48,7 @@ export default function Navbar({darkMode, toggleDarkMode}: Props) {
                             to={path}
                             key={path}
                             sx={navStyles}>
-                                {title.toUpperCase()}
+                            {title.toUpperCase()}
                         </ListItem>
                     ))}
                 </List>
@@ -66,8 +66,9 @@ export default function Navbar({darkMode, toggleDarkMode}: Props) {
                                 component={NavLink}
                                 to={path}
                                 key={path}
-                                sx={navStyles}>
-                                    {title.toUpperCase()}
+                                sx={navStyles}
+                            >
+                                {title.toUpperCase()}
                             </ListItem>
                         ))}
                     </List>

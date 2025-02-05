@@ -30,7 +30,8 @@ function App() {
             ? 'radial-gradient(circle, #1e3aBa, #111B27)'
             : 'radial-gradient(circle, #baecf9, #f0f9ff)',
           py: 6
-        }}>
+        }}
+      >
         <Container maxWidth='xl' sx={{mt: 8}}>
           <Outlet />
         </Container>

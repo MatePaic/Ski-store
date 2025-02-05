@@ -34,9 +34,7 @@ export default function ProductDetails() {
         <Divider sx={{ mb: 2 }} />
         <Typography variant='h4' color='secondary'>${(product.price / 100).toFixed(2)}</Typography>
         <TableContainer>
-          <Table sx={{
-            '& td': {fontSize: '1rem'}
-          }}>
+          <Table sx={{'& td': {fontSize: '1rem'}}}>
             <TableBody>
               {productDetails.map((detail, index) => (
                 <TableRow key = {index}>
@@ -54,7 +52,8 @@ export default function ProductDetails() {
               type='number'
               label='Quantity in basker'
               fullWidth
-              defaultValue={1}/>
+              defaultValue={1}
+            />
           </Grid2>
           <Grid2 size={6}>
             <Button
@@ -62,8 +61,9 @@ export default function ProductDetails() {
               color='primary'
               size='large'
               variant='contained'
-              fullWidth>
-                Add to Basket
+              fullWidth
+            >
+              Add to Basket
             </Button>
           </Grid2>
         </Grid2>
