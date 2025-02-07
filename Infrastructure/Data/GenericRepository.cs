@@ -1,17 +1,23 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Data
 {
     public class GenericRepository<T>(StoreContext context) : IGenericRepository<T> where T : BaseEntity
     {
-        public async Task<IReadOnlyList<T>> GetAsync(ISpecification<T> specification)
+        async Task<IReadOnlyList<T>> IGenericRepository<T>.GetAllAsync()
+        {
+            return await context.Set<T>().ToListAsync();
+        }
+
+        public async Task<IReadOnlyList<T>> GetWithSpecificationAsync(ISpecification<T> specification)
         {
             return await ApplySpecification(specification).ToListAsync();
         }
 
-        public async Task<IReadOnlyList<TResult>> GetAsync<TResult>(ISpecification<T, TResult> specification)
+        public async Task<IReadOnlyList<TResult>> GetWithSpecificationAsync<TResult>(ISpecification<T, TResult> specification)
         {
             return await ApplySpecification(specification).ToListAsync();
         }
@@ -19,6 +25,11 @@ namespace Infrastructure.Data
         public async Task<T?> GetByIdAsync(int id)
         {
             return await context.Set<T>().FindAsync(id);
+        }
+
+        public async Task<T?> GetFirstOrDefaultWithSpecAsync(ISpecification<T> specification, Expression<Func<T, bool>> predicate)
+        {
+            return await ApplySpecification(specification).FirstOrDefaultAsync(predicate);
         }
 
         public void Add(T entity)

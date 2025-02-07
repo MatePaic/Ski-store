@@ -1,12 +1,10 @@
-﻿using API.RequestHelpers;
-using Core.Entities;
+﻿using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    
     public class ProductsController(IGenericRepository<Product> productRepository) : BaseApiController
     {
         [HttpGet] //https://localhost:5001/api/products
@@ -81,7 +79,7 @@ namespace API.Controllers
         {
             var specification = new BrandListSpecification();
 
-            var brands = await productRepository.GetAsync(specification);
+            var brands = await productRepository.GetWithSpecificationAsync(specification);
 
             return Ok(brands);
         }
@@ -91,7 +89,7 @@ namespace API.Controllers
         {
             var specification = new TypeListSpecification();
 
-            var types = await productRepository.GetAsync(specification);
+            var types = await productRepository.GetWithSpecificationAsync(specification);
 
             return Ok(types);
         }

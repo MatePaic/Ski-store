@@ -1,5 +1,7 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Infrastructure.Data
 {
@@ -12,8 +14,21 @@ namespace Infrastructure.Data
                 query = query.Where(specification.Criteria); // x => x.Brand == brand
             }
 
-            if (specification.OrderBy != null) 
-            { 
+            if (specification.Includes != null)
+            {
+                foreach (var include in specification.Includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            foreach (var includeString in specification.IncludeStrings)
+            {
+                query = query.Include(includeString);
+            }
+
+            if (specification.OrderBy != null)
+            {
                 query = query.OrderBy(specification.OrderBy);
             }
 
@@ -42,6 +57,19 @@ namespace Infrastructure.Data
             if (specification.Criteria != null)
             {
                 query = query.Where(specification.Criteria); // x => x.Brand == brand
+            }
+
+            if (specification.Includes != null)
+            {
+                foreach (var include in specification.Includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
+            foreach (var includeString in specification.IncludeStrings)
+            {
+                query = query.Include(includeString);
             }
 
             if (specification.OrderBy != null)

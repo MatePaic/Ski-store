@@ -12,7 +12,7 @@ namespace API.Controllers
         protected async Task<ActionResult> CreatePagedResult<T>(IGenericRepository<T> repository,
             ISpecification<T> specification, int pageIndex, int pageSize) where T : BaseEntity
         {
-            var items = await repository.GetAsync(specification);
+            var items = await repository.GetWithSpecificationAsync(specification);
             var count = await repository.CountAsync(specification);
 
             var pagination = new Pagination<T>(pageIndex, pageSize, count, items);

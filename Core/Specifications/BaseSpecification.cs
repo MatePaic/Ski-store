@@ -7,6 +7,8 @@ namespace Core.Specifications
     {
         protected BaseSpecification() : this(null) { }
         public Expression<Func<T, bool>>? Criteria => criteria;
+        public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>>();
+        public List<string> IncludeStrings { get; } = new List<string>();
 
         public Expression<Func<T, object>>? OrderBy {get; private set; }
 
@@ -28,6 +30,16 @@ namespace Core.Specifications
             }
 
             return query;
+        }
+
+        public void AddInclude(Expression<Func<T, object>> includeExpression)
+        {
+            Includes.Add(includeExpression);
+        }
+
+        public void AddInclude(string includeString)
+        {
+            IncludeStrings.Add(includeString);
         }
 
         protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)
