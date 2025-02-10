@@ -9,13 +9,13 @@ namespace API.Controllers
     {
         [HttpGet] //https://localhost:5001/api/products
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts(
-            [FromQuery] ProductSpecParams productSpecParams)
+            [FromQuery]ProductSpecParams productSpecParams)
         {
             var specification = new ProductSpecification(productSpecParams);
 
             return await CreatePagedResult(
                 productRepository, specification, 
-                productSpecParams.PageIndex, productSpecParams.PageSize);
+                productSpecParams.PageNumber, productSpecParams.PageSize);
         }
 
         [HttpGet("{id:int}")] // api/products/2
@@ -44,7 +44,7 @@ namespace API.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult> UpdateProduct(int id, Product product)
         {
-            if (product.Id != id || !ProductExists(id))
+            if (product.Id != id || !productRepository.Exists(id))
                 return BadRequest("Cannot update this product");
 
             productRepository.Update(product);
@@ -74,29 +74,16 @@ namespace API.Controllers
             return BadRequest("Problem deleting the project");
         }
 
-        [HttpGet("brands")]
-        public async Task<ActionResult<IReadOnlyList<string>>> GetBrands()
+        [HttpGet("filters")]
+        public async Task<ActionResult<IReadOnlyList<string>>> GetFilters()
         {
-            var specification = new BrandListSpecification();
+            var brandSpecification = new BrandListSpecification();
+            var typeSpecification = new TypeListSpecification();
 
-            var brands = await productRepository.GetWithSpecificationAsync(specification);
+            var brands = await productRepository.GetWithSpecificationAsync(brandSpecification);
+            var types = await productRepository.GetWithSpecificationAsync(typeSpecification);
 
-            return Ok(brands);
-        }
-
-        [HttpGet("types")]
-        public async Task<ActionResult<IReadOnlyList<string>>> GetTypes()
-        {
-            var specification = new TypeListSpecification();
-
-            var types = await productRepository.GetWithSpecificationAsync(specification);
-
-            return Ok(types);
-        }
-
-        private bool ProductExists(int id)
-        {
-            return productRepository.Exists(id);
+            return Ok(new {brands, types});
         }
     }
 }

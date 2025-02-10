@@ -10,7 +10,7 @@ namespace Core.Specifications
             (productSpecParams.Types.Count == 0 || productSpecParams.Types.Contains(x.Type))
         )
         {
-            ApplyPaging(productSpecParams.PageSize * (productSpecParams.PageIndex - 1), productSpecParams.PageSize);
+            ApplyPaging(productSpecParams.PageSize * (productSpecParams.PageNumber - 1), productSpecParams.PageSize);
 
             switch (productSpecParams.Sort)
             {
