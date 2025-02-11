@@ -10,12 +10,9 @@ const customBaseQuery = fetchBaseQuery({
 
 type ErrorResponse = | string | { title: string } | { errors: string[] };
 
-// const sleep = () => new Promise(resolve => setTimeout(resolve, 1000));
-
 export const baseQueryWithErrorHandling = async (args: string | FetchArgs, api: BaseQueryApi,
     extraOptions: object) => {
     api.dispatch(startLoading());
-    // await sleep();
     const result = await customBaseQuery(args, api, extraOptions);
     api.dispatch(stopLoading());
     if (result.error) {
@@ -42,7 +39,6 @@ export const baseQueryWithErrorHandling = async (args: string | FetchArgs, api: 
                     router.navigate('/not-found');
                 break;
             case 500:
-                console.log("here");
                 if (typeof responseData === 'object')
                     router.navigate('/server-error', { state: { error: responseData } });
                 break;
