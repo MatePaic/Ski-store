@@ -21,7 +21,7 @@ namespace API
                 context.Database.Migrate();
 
                 await SeedUserDataAsync(userManager);
-                await StoreContextSeed.SeedAsync(context);
+                await StoreContextSeed<Product>.SeedAsync(context, "products.json");
             }
             catch (Exception exception)
             {
@@ -36,6 +36,8 @@ namespace API
             {
                 var user = new User
                 {
+                    FirstName = "bob",
+                    LastName = "smith",
                     UserName = "bob@test.com",
                     Email = "bob@test.com"
                 };
@@ -45,6 +47,8 @@ namespace API
 
                 var admin = new User
                 {
+                    FirstName = "admin",
+                    LastName = "smith",
                     UserName = "admin@test.com",
                     Email = "admin@test.com"
                 };

@@ -1,4 +1,5 @@
 ﻿using API.DTOs;
+using API.Extensions;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -12,12 +13,14 @@ namespace API.Controllers
         IGenericRepository<ShoppingCart> shoppingCartRepository, 
         IShoppingCartService shoppingCartService,
         IGenericRepository<Product> productRepository,
-        IMapper mapper) : BaseApiController
+        IMapper mapper
+    ) : BaseApiController
     {
         [HttpGet]
         public async Task<ActionResult<ShoppingCartDto>> GetShoppingCart()
         {
-            var shoppingCart = await RetrieveShoppingCart();
+            var shoppingCart = await shoppingCartRepository
+                .GetShoppingCartWithItems(Request.Cookies["shoppingCartId"]);
 
             if (shoppingCart == null) return NoContent();
 
@@ -27,7 +30,8 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<ShoppingCartDto>> AddItemToShoppingCart(int productId, int quantity)
         {
-            var shoppingCart = await RetrieveShoppingCart();
+            var shoppingCart = await shoppingCartRepository
+                .GetShoppingCartWithItems(Request.Cookies["shoppingCartId"]);
 
             shoppingCart ??= CreateShoppingCart();
 
@@ -47,7 +51,9 @@ namespace API.Controllers
         [HttpDelete]
         public async Task<ActionResult> RemoveShoppingCartItem(int productId, int quantity)
         {
-            var shoppingCart = await RetrieveShoppingCart();
+            var shoppingCart = await shoppingCartRepository
+                .GetShoppingCartWithItems(Request.Cookies["shoppingCartId"]);
+            
             if (shoppingCart == null)
             {
                 return BadRequest("Unable to retrieve shoppingCart");
@@ -59,16 +65,6 @@ namespace API.Controllers
             if (result) return Ok();
 
             return BadRequest("Product does not exist in the shoppingCart");
-        }
-
-        private async Task<ShoppingCart?> RetrieveShoppingCart()
-        {
-            var specification = new ShoppingCartIncludeSpecification();
-            Expression<Func<ShoppingCart, bool>> predicate = p => p.ShoppingCartId == Request.Cookies["shoppingCartId"];
-
-            var shoppingCart = await shoppingCartRepository.GetFirstOrDefaultWithSpecAsync(specification, predicate);
-
-            return shoppingCart;
         }
 
         private ShoppingCart CreateShoppingCart()

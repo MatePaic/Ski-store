@@ -19,6 +19,7 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddCors();
 builder.Services.AddTransient<ExceptionMiddleware>();
+builder.Services.AddScoped<IPaymentService, PaymentsService>();
 builder.Services.AddSingleton<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddAutoMapper(typeof(MappingProfiles));
 builder.Services.AddAuthorization();

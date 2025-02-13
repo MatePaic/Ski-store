@@ -1,21 +1,20 @@
-﻿using Core.Entities;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace Infrastructure.Data
 {
-    public class StoreContextSeed
+    public class StoreContextSeed<T> where T : class
     {
-        public static async Task SeedAsync(StoreContext context)
+        public static async Task SeedAsync(StoreContext context, string jsonData)
         {
-            if (!context.Products.Any())
+            if (!context.Set<T>().Any())
             {
-                var productsData = await File.ReadAllTextAsync("../Infrastructure/Data/SeedData/products.json");
+                var data = await File.ReadAllTextAsync("../Infrastructure/Data/SeedData/" + jsonData);
 
-                var products = JsonSerializer.Deserialize<List<Product>>(productsData);
+                var entity = JsonSerializer.Deserialize<List<T>>(data);
 
-                if (products == null) return;
+                if (entity == null) return;
 
-                context.Products.AddRange(products);
+                context.Set<T>().AddRange(entity);
 
                 await context.SaveChangesAsync();
             }

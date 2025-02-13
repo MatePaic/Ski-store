@@ -3,6 +3,8 @@ import { Product } from "./product"
 export type ShoppingCart = {
     shoppingCartId: string
     items: Item[]
+    clientSecret?: string
+    paymentIntentId?: string
   }
   
 export class Item {

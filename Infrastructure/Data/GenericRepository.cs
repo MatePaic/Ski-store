@@ -57,6 +57,12 @@ namespace Infrastructure.Data
         {
             return await context.SaveChangesAsync() > 0;
         }
+
+        public bool HasChanges()
+        {
+            return context.ChangeTracker.HasChanges();
+        }
+
         public async Task<int> CountAsync(ISpecification<T> specification)
         {
             var query = context.Set<T>().AsQueryable();
