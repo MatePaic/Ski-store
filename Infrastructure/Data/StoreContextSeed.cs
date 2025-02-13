@@ -1,8 +1,9 @@
-﻿using System.Text.Json;
+﻿using Core.Entities;
+using System.Text.Json;
 
 namespace Infrastructure.Data
 {
-    public class StoreContextSeed<T> where T : class
+    public class StoreContextSeed<T> where T : BaseEntity
     {
         public static async Task SeedAsync(StoreContext context, string jsonData)
         {

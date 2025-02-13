@@ -10,7 +10,7 @@ namespace API.Controllers
 {
     public class PaymentsController(
         IPaymentService paymentService, 
-        IGenericRepository<ShoppingCart> shoppingCartRepository,
+        IUnitOfWork unit,
         IMapper mapper
     ) : BaseApiController
     {
@@ -18,16 +18,16 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<ShoppingCartDto>> CreateOrUpdatePaymentIntent()
         {
-            var shoppingCart = await shoppingCartRepository
+            var shoppingCart = await unit.Repository<ShoppingCart>()
                 .GetShoppingCartWithItems(Request.Cookies["shoppingCartId"]);
-            if (shoppingCart == null) return BadRequest("Problem with the basket");
+            if (shoppingCart == null) return BadRequest("Problem with the shoppingCart");
 
             var intent = await paymentService.CreateOrUpdatePaymentIntent(shoppingCart);
             if (intent == null) return BadRequest("Problem creating payment intent");
 
-            if (shoppingCartRepository.HasChanges())
+            if (unit.Repository<ShoppingCart>().HasChanges())
             {
-                var result = await shoppingCartRepository.SaveChangesAsync();
+                var result = await unit.Complete();
                 if (!result) return BadRequest("Problem updating shoppingCart with intent");
             }
 

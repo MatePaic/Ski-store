@@ -7,7 +7,7 @@ namespace Core.Specifications
         public ShoppingCartIncludeSpecification()
         {
             AddInclude(x => x.Items);
-            AddInclude("Items.Product");
+            AddIncludeString("Items.Product");
         }
     }
 }

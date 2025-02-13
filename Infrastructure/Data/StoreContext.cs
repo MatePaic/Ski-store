@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Entities.OrderAggregate;
 using Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -10,6 +11,7 @@ namespace Infrastructure.Data
     {
         public required DbSet<Product> Products { get; set; }
         public required DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public required DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

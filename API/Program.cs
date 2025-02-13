@@ -17,6 +17,7 @@ builder.Services.AddDbContext<StoreContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddCors();
 builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddScoped<IPaymentService, PaymentsService>();

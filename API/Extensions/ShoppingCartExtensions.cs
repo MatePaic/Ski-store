@@ -15,6 +15,8 @@ namespace API.Extensions
 
             var shoppingCart = await shoppingCartRepository.GetFirstOrDefaultWithSpecAsync(specification, predicate);
 
+            if (shoppingCart == null) return null;
+
             return shoppingCart;
         }
     }

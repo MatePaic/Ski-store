@@ -5,7 +5,6 @@ using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -88,7 +87,7 @@ namespace API.Controllers
         {
             var user = await signInManager.UserManager.GetUserByEmailWithAddress(User);
 
-            if (user.Address == null) return NoContent();
+            if (user.Address == null) return Ok(new {});
 
             return Ok(mapper.Map<AddressDto>(user.Address));
         }

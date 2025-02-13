@@ -10,11 +10,11 @@ namespace Core.Interfaces
         Task<IReadOnlyList<TResult>> GetWithSpecificationAsync<TResult>(ISpecification<T, TResult> specification);
         Task<T?> GetByIdAsync(int id);
         Task<T?> GetFirstOrDefaultWithSpecAsync(ISpecification<T> specification, Expression<Func<T, bool>> predicate);
+        Task<T?> GetFirstOrDefaultWithSpecAsync(ISpecification<T> specification);
         void Add(T entity);
         void Update(T entity);
         void Remove(T entity);
         bool Exists(int id);
-        Task<bool> SaveChangesAsync();
         bool HasChanges();
         Task<int> CountAsync(ISpecification<T> specification);
     }

@@ -3,23 +3,20 @@ using API.Extensions;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
-using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
 
 namespace API.Controllers
 {
     public class ShoppingCartController(
-        IGenericRepository<ShoppingCart> shoppingCartRepository, 
         IShoppingCartService shoppingCartService,
-        IGenericRepository<Product> productRepository,
+        IUnitOfWork unit,
         IMapper mapper
     ) : BaseApiController
     {
         [HttpGet]
         public async Task<ActionResult<ShoppingCartDto>> GetShoppingCart()
         {
-            var shoppingCart = await shoppingCartRepository
+            var shoppingCart = await unit.Repository<ShoppingCart>()
                 .GetShoppingCartWithItems(Request.Cookies["shoppingCartId"]);
 
             if (shoppingCart == null) return NoContent();
@@ -30,17 +27,17 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<ShoppingCartDto>> AddItemToShoppingCart(int productId, int quantity)
         {
-            var shoppingCart = await shoppingCartRepository
+            var shoppingCart = await unit.Repository<ShoppingCart>()
                 .GetShoppingCartWithItems(Request.Cookies["shoppingCartId"]);
 
             shoppingCart ??= CreateShoppingCart();
 
-            var product = await productRepository.GetByIdAsync(productId);
+            var product = await unit.Repository<Product>().GetByIdAsync(productId);
             if (product == null) return BadRequest("Problem adding item to shoppingCart");
 
             shoppingCartService.AddItem(product, quantity, shoppingCart.Items);
 
-            var result = await shoppingCartRepository.SaveChangesAsync();
+            var result = await unit.Complete();
 
             if (result) return CreatedAtAction(nameof(GetShoppingCart), 
                 mapper.Map<ShoppingCartDto>(shoppingCart));
@@ -51,7 +48,7 @@ namespace API.Controllers
         [HttpDelete]
         public async Task<ActionResult> RemoveShoppingCartItem(int productId, int quantity)
         {
-            var shoppingCart = await shoppingCartRepository
+            var shoppingCart = await unit.Repository<ShoppingCart>()
                 .GetShoppingCartWithItems(Request.Cookies["shoppingCartId"]);
             
             if (shoppingCart == null)
@@ -61,7 +58,7 @@ namespace API.Controllers
 
             shoppingCartService.RemoveItem(productId, quantity, shoppingCart.Items);
 
-            var result = await shoppingCartRepository.SaveChangesAsync();
+            var result = await unit.Complete();
             if (result) return Ok();
 
             return BadRequest("Product does not exist in the shoppingCart");
@@ -79,7 +76,7 @@ namespace API.Controllers
             Response.Cookies.Append("shoppingCartId", shoppingCartId, cookieOptions);
 
             var shoppingCart = new ShoppingCart { ShoppingCartId = shoppingCartId };
-            shoppingCartRepository.Add(shoppingCart);
+            unit.Repository<ShoppingCart>().Add(shoppingCart);
 
             return shoppingCart;
         }

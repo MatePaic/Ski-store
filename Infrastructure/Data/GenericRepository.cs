@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq.Expressions;
 
 namespace Infrastructure.Data
@@ -31,6 +32,10 @@ namespace Infrastructure.Data
         {
             return await ApplySpecification(specification).FirstOrDefaultAsync(predicate);
         }
+        public async Task<T?> GetFirstOrDefaultWithSpecAsync(ISpecification<T> specification)
+        {
+            return await ApplySpecification(specification).FirstOrDefaultAsync();
+        }
 
         public void Add(T entity)
         {
@@ -51,11 +56,6 @@ namespace Infrastructure.Data
         public bool Exists(int id)
         {
             return context.Set<T>().Any(x => x.Id == id);
-        }
-
-        public async Task<bool> SaveChangesAsync()
-        {
-            return await context.SaveChangesAsync() > 0;
         }
 
         public bool HasChanges()

@@ -1,6 +1,7 @@
 ﻿using API.DTOs;
 using AutoMapper;
 using Core.Entities;
+using Core.Entities.OrderAggregate;
 
 namespace API.Extensions
 {

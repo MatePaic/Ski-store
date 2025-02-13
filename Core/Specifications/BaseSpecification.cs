@@ -7,8 +7,8 @@ namespace Core.Specifications
     {
         protected BaseSpecification() : this(null) { }
         public Expression<Func<T, bool>>? Criteria => criteria;
-        public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>>();
-        public List<string> IncludeStrings { get; } = new List<string>();
+        public List<Expression<Func<T, object>>> Includes { get; } = [];
+        public List<string> IncludeStrings { get; } = [];
 
         public Expression<Func<T, object>>? OrderBy {get; private set; }
 
@@ -32,12 +32,12 @@ namespace Core.Specifications
             return query;
         }
 
-        public void AddInclude(Expression<Func<T, object>> includeExpression)
+        protected void AddInclude(Expression<Func<T, object>> includeExpression)
         {
             Includes.Add(includeExpression);
         }
 
-        public void AddInclude(string includeString)
+        protected void AddIncludeString(string includeString)
         {
             IncludeStrings.Add(includeString);
         }
