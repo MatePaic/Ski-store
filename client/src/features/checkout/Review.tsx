@@ -1,18 +1,22 @@
-import { Box, Divider, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
-import { currencyFormat } from "../../lib/util";
+import { Box, Divider, Typography } from "@mui/material";
 import { ConfirmationToken } from "@stripe/stripe-js";
 import { useShoppingCart } from "../../lib/hooks/useShoppingCart";
+import MappingItems from "../../app/shared/components/MappingItems";
 
 type Props = {
     confirmationToken: ConfirmationToken | null;
 }
 
 export default function Review({confirmationToken}: Props) {
-    const {shoppingCart} = useShoppingCart();
+    const { shoppingCart } = useShoppingCart();
+    
+    if (!shoppingCart) return <Typography variant="h5">There is no shopping cart.</Typography>
 
     const addressString = () => {
         if (!confirmationToken?.shipping) return '';
+        
         const {name, address} = confirmationToken.shipping;
+        
         return `${name}, ${address?.line1}, ${address?.city}, ${address?.state},
             ${address?.postal_code}, ${address?.country}`
     }
@@ -50,35 +54,7 @@ export default function Review({confirmationToken}: Props) {
 
             <Box mt={6} mx="auto">
                 <Divider />
-                <TableContainer>
-                    <Table>
-                        <TableBody>
-                            {shoppingCart?.items.map((item) => (
-                                <TableRow key={item.productId}
-                                    sx={{borderBottom: "1px solid rgba(224, 224, 224, 1)"}}>
-                                        <TableCell sx={{py: 4}}>
-                                            <Box display="flex" gap={3} alignItems="center">
-                                                <img
-                                                    src={item.pictureUrl}
-                                                    alt={item.name}
-                                                    style={{width: 40, height: 40}}
-                                                />
-                                                <Typography>
-                                                    {item.name}
-                                                </Typography>
-                                            </Box>
-                                        </TableCell>
-                                        <TableCell align="center" sx={{p: 4}}>
-                                            x {item.quantity}
-                                        </TableCell>
-                                        <TableCell align="right" sx={{p: 4}}>
-                                            {currencyFormat(item.price)}
-                                        </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+                <MappingItems items={shoppingCart.items}/>
             </Box>
         </div>
     )

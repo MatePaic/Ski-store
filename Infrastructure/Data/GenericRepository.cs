@@ -27,11 +27,16 @@ namespace Infrastructure.Data
         {
             return await context.Set<T>().FindAsync(id);
         }
+        public async Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await context.Set<T>().FirstOrDefaultAsync(predicate);
+        }
 
         public async Task<T?> GetFirstOrDefaultWithSpecAsync(ISpecification<T> specification, Expression<Func<T, bool>> predicate)
         {
             return await ApplySpecification(specification).FirstOrDefaultAsync(predicate);
         }
+
         public async Task<T?> GetFirstOrDefaultWithSpecAsync(ISpecification<T> specification)
         {
             return await ApplySpecification(specification).FirstOrDefaultAsync();

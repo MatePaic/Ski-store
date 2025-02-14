@@ -1,12 +1,12 @@
 ﻿using API.DTOs;
 using API.Extensions;
-using AutoMapper;
 using Core.Entities;
 using Core.Entities.OrderAggregate;
 using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 
 namespace API.Controllers
 {
@@ -57,21 +57,29 @@ namespace API.Controllers
             var subtotal = items.Sum(x => x.Price * x.Quantity);
             var deliveryFee = CalculateDeliveryFee(subtotal);
 
-            var order = new Order
+            Expression<Func<Order, bool>> predicate = p => p.PaymentIntentId == shoppingCart.PaymentIntentId;
+            var orderSpecification = new OrderSpecification(User.GetEmail());
+
+            var order = await unit.Repository<Order>().GetFirstOrDefaultWithSpecAsync(orderSpecification, predicate);
+
+            if (order == null)
             {
-                OrderItems = items,
-                BuyerEmail = email,
-                ShippingAddress = orderDto.ShippingAddress,
-                DeliveryFee = deliveryFee,
-                Subtotal = subtotal,
-                PaymentSummary = orderDto.PaymentSummary,
-                PaymentIntentId = shoppingCart.PaymentIntentId
-            };
-
-            unit.Repository<Order>().Add(order);
-
-            unit.Repository<ShoppingCart>().Remove(shoppingCart);
-            Response.Cookies.Delete("shoppingCartId");
+                order = new Order
+                {
+                    OrderItems = items,
+                    BuyerEmail = email,
+                    ShippingAddress = orderDto.ShippingAddress,
+                    DeliveryFee = deliveryFee,
+                    Subtotal = subtotal,
+                    PaymentSummary = orderDto.PaymentSummary,
+                    PaymentIntentId = shoppingCart.PaymentIntentId
+                };
+                unit.Repository<Order>().Add(order);
+            }
+            else
+            {
+                order.OrderItems = items;
+            }
 
             if (await unit.Complete())
             {
@@ -96,10 +104,12 @@ namespace API.Controllers
                     {
                         ProductId = item.ProductId,
                         PictureUrl = item.Product.PictureUrl,
-                        Name = item.Product.Name
+                        Name = item.Product.Name,
                     },
                     Price = item.Product.Price,
-                    Quantity = item.Quantity
+                    Quantity = item.Quantity,
+                    Brand = item.Product.Brand,
+                    Type = item.Product.Type
                 };
                 orderItems.Add(orderItem);
 

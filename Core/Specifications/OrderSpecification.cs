@@ -14,5 +14,10 @@ namespace Core.Specifications
         {
             AddInclude(x => x.OrderItems);
         }
+
+        public OrderSpecification()
+        {
+            AddInclude(x => x.OrderItems);
+        }
     }
 }

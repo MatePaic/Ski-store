@@ -86,6 +86,7 @@ export const shoppingCartApi = createApi({
                 dispatch(
                     shoppingCartApi.util.updateQueryData('fetchShoppingCart', undefined, (draft) => {
                         draft.items = [];
+                        draft.shoppingCartId = '';
                     })
                 );
                 Cookies.remove('shoppingCartId');

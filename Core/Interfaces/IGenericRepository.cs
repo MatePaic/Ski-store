@@ -9,6 +9,7 @@ namespace Core.Interfaces
         Task<IReadOnlyList<T>> GetWithSpecificationAsync(ISpecification<T> specification);
         Task<IReadOnlyList<TResult>> GetWithSpecificationAsync<TResult>(ISpecification<T, TResult> specification);
         Task<T?> GetByIdAsync(int id);
+        Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
         Task<T?> GetFirstOrDefaultWithSpecAsync(ISpecification<T> specification, Expression<Func<T, bool>> predicate);
         Task<T?> GetFirstOrDefaultWithSpecAsync(ISpecification<T> specification);
         void Add(T entity);
