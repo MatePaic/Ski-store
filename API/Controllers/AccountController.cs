@@ -87,7 +87,7 @@ namespace API.Controllers
         {
             var user = await signInManager.UserManager.GetUserByEmailWithAddress(User);
 
-            if (user.Address == null) return Ok(new {});
+            if (user.Address == null) return NoContent();
 
             return Ok(mapper.Map<AddressDto>(user.Address));
         }

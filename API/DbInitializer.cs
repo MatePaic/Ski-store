@@ -7,7 +7,7 @@ namespace API
 {
     public class DbInitializer
     {
-        public static async void InitDb(WebApplication application)
+        public static async Task InitDb(WebApplication application)
         {
             try
             {
