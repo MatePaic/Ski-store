@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Infrastructure.Data
@@ -9,7 +10,9 @@ namespace Infrastructure.Data
         {
             if (!context.Set<T>().Any())
             {
-                var data = await File.ReadAllTextAsync("../Infrastructure/Data/SeedData/" + jsonData);
+                var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+                var data = await File.ReadAllTextAsync(path + @"/Data/SeedData/" + jsonData);
 
                 var entity = JsonSerializer.Deserialize<List<T>>(data);
 
