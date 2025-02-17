@@ -1,6 +1,7 @@
 using API;
-using API.Extensions;
+using API.ImageService;
 using API.Middleware;
+using API.RequestHelpers;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 builder.Services.AddControllers();
 builder.Services.AddDbContext<StoreContext>(opt =>
 {
@@ -21,8 +23,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddCors();
 builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddScoped<IPaymentService, PaymentsService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddSingleton<IShoppingCartService, ShoppingCartService>();
-builder.Services.AddAutoMapper(typeof(MappingProfiles));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<User>(opt =>
 {

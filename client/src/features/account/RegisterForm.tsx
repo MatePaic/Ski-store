@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { LockOutlined } from "@mui/icons-material";
 import { Container, Paper, Box, Typography, TextField, Button } from "@mui/material";
 import { Link } from "react-router-dom";
+import { handleApiError } from "../../lib/util";
 
 export default function RegisterForm() {
     const [registerUser] = useRegisterMutation();
@@ -18,18 +19,8 @@ export default function RegisterForm() {
         try {
             await registerUser(data).unwrap();
         } catch (error) {
-            const apiError = error as {message: string};
-            if (apiError.message && typeof apiError.message === "string") {
-                const errorArray = apiError.message.split(',');
-
-                errorArray.forEach(error => {
-                    if (error.includes('Password')) {
-                        setError('password', {message: error});
-                    } else if (error.includes('Email')) {
-                        setError('email', {message: error});
-                    }
-                });
-            }
+            handleApiError<RegisterSchema>(error, setError, 
+                ['password', 'email', 'firstName', 'lastName']);
         }
     }
     
