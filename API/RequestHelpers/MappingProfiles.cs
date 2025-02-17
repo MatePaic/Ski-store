@@ -1,9 +1,8 @@
 ﻿using API.DTOs;
 using AutoMapper;
 using Core.Entities;
-using Core.Entities.OrderAggregate;
 
-namespace API.Extensions
+namespace API.RequestHelpers
 {
     public class MappingProfiles : Profile
     {
@@ -19,6 +18,9 @@ namespace API.Extensions
 
             CreateMap<Address, AddressDto>();
             CreateMap<AddressDto, Address>();
+
+            CreateMap<CreateProductDto, Product>();
+            CreateMap<UpdateProductDto, Product>();
         }
     }
 }

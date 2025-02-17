@@ -6,7 +6,7 @@ type Props = {
     onPageChange: (page: number) => void
 }
 
-export default function AppPagination({ metadata, onPageChange }: Props) {
+export default function AppPagination({metadata, onPageChange}: Props) {
     const {currentPage, totalPages, pageSize, totalCount} = metadata;
 
     const startItem = (currentPage - 1) * pageSize + 1;

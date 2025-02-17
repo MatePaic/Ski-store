@@ -13,7 +13,6 @@ namespace Core.Interfaces
         Task<T?> GetFirstOrDefaultWithSpecAsync(ISpecification<T> specification, Expression<Func<T, bool>> predicate);
         Task<T?> GetFirstOrDefaultWithSpecAsync(ISpecification<T> specification);
         void Add(T entity);
-        void Update(T entity);
         void Remove(T entity);
         bool Exists(int id);
         bool HasChanges();
