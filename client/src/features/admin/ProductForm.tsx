@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { useCreateProductMutation, useUpdateProductMutation } from "./adminApi";
 import { LoadingButton } from "@mui/lab";
 import { handleApiError } from "../../lib/util";
+import { toast } from "react-toastify";
 
 type Props = {
     setEditMode: (value: boolean) => void;
@@ -52,8 +53,14 @@ export default function ProductForm({setEditMode, product, refetch, setSelectedP
 
             if (watchFile) formData.append('file', watchFile);
 
-            if (product) await updateProduct({id: product.id, data: formData}).unwrap();
-            else await createProduct(formData).unwrap();
+            if (product) {
+                await updateProduct({ id: product.id, data: formData }).unwrap()
+                toast.success(`Successfully updated product ${product.id}!`);
+            }
+            else {
+                await createProduct(formData).unwrap();
+                toast.success(`Successfully created ${data.name} product!`);
+            }
 
             setSelectedProduct(null);
             setEditMode(false);
