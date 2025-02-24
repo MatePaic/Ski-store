@@ -34,9 +34,9 @@ export default function Navbar() {
     const {data: user} = useUserInfoQuery();
     const {isLoading, darkMode} = useAppSelector(state => state.ui);
     const dispatch = useAppDispatch();
-    const { data: basket } = useFetchShoppingCartQuery();
+    const { data: shoppingCart } = useFetchShoppingCartQuery();
 
-    const itemCount = basket?.items.reduce((sum, item) => sum + item.quantity, 0) || 0;
+    const itemCount = shoppingCart?.items.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
     return (
         <AppBar position='fixed'>

@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    partial class StoreContextModelSnapshot : ModelSnapshot
+    [Migration("20250224164815_RoleConfigurationAdded")]
+    partial class RoleConfigurationAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,37 +63,6 @@ namespace Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Address");
-                });
-
-            modelBuilder.Entity("Core.Entities.AppCoupon", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal?>("AmountOff")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("CouponId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("PercentOff")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("PromotionCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AppCoupon");
                 });
 
             modelBuilder.Entity("Core.Entities.OrderAggregate.Order", b =>
@@ -215,9 +187,6 @@ namespace Infrastructure.Migrations
                     b.Property<string>("ClientSecret")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CouponId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PaymentIntentId")
                         .HasColumnType("nvarchar(max)");
 
@@ -226,8 +195,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CouponId");
 
                     b.ToTable("ShoppingCarts");
                 });
@@ -595,15 +562,6 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("ItemOrdered")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Core.Entities.ShoppingCart", b =>
-                {
-                    b.HasOne("Core.Entities.AppCoupon", "Coupon")
-                        .WithMany()
-                        .HasForeignKey("CouponId");
-
-                    b.Navigation("Coupon");
                 });
 
             modelBuilder.Entity("Core.Entities.ShoppingCartItem", b =>

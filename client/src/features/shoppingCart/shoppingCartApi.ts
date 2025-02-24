@@ -91,6 +91,32 @@ export const shoppingCartApi = createApi({
                 );
                 Cookies.remove('shoppingCartId');
             }
+        }),
+        addCoupon: builder.mutation<ShoppingCart, string>({
+            query: (code: string) => ({
+                url: `shoppingCart/${code}`,
+                method: 'POST'
+            }),
+            onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
+                const {data: updatedShoppingCart} = await queryFulfilled;
+
+                dispatch(shoppingCartApi.util.updateQueryData('fetchShoppingCart', undefined, (draft)=> {
+                    Object.assign(draft, updatedShoppingCart)
+                }))
+            } 
+        }),
+        removeCoupon: builder.mutation<ShoppingCart, void>({
+            query: () => ({
+                url: 'shoppingCart/remove-coupon',
+                method: 'DELETE'
+            }),
+            onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
+                await queryFulfilled;
+
+                dispatch(shoppingCartApi.util.updateQueryData('fetchShoppingCart', undefined, (draft)=> {
+                    draft.coupon = null
+                }))
+            } 
         })
     })
 });
@@ -99,5 +125,7 @@ export const {
     useFetchShoppingCartQuery,
     useAddShoppingCartItemMutation,
     useRemoveShoppingCartItemMutation,
-    useClearShoppingCartMutation
+    useClearShoppingCartMutation,
+    useAddCouponMutation,
+    useRemoveCouponMutation
 } = shoppingCartApi;

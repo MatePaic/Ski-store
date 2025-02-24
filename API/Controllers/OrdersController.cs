@@ -11,7 +11,7 @@ using System.Linq.Expressions;
 namespace API.Controllers
 {
     [Authorize]
-    public class OrdersController(IUnitOfWork unit) : BaseApiController
+    public class OrdersController(IUnitOfWork unit, IDiscountService discountService) : BaseApiController
     {
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<OrderDto>>> GetOrders()
@@ -57,6 +57,13 @@ namespace API.Controllers
             var subtotal = items.Sum(x => x.Price * x.Quantity);
             var deliveryFee = CalculateDeliveryFee(subtotal);
 
+            var discount = 0m;
+
+            if (shoppingCart.Coupon != null)
+            {
+                discount = await discountService.CalculateDiscountFromAmount(shoppingCart.Coupon, subtotal);
+            }
+
             Expression<Func<Order, bool>> predicate = p => p.PaymentIntentId == shoppingCart.PaymentIntentId;
             var orderSpecification = new OrderSpecification(User.GetEmail());
 
@@ -70,6 +77,7 @@ namespace API.Controllers
                     BuyerEmail = email,
                     ShippingAddress = orderDto.ShippingAddress,
                     DeliveryFee = deliveryFee,
+                    Discount = discount,
                     Subtotal = subtotal,
                     PaymentSummary = orderDto.PaymentSummary,
                     PaymentIntentId = shoppingCart.PaymentIntentId
