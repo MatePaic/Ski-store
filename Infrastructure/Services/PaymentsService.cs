@@ -6,10 +6,11 @@ using Stripe;
 namespace Infrastructure.Services
 {
     public class PaymentsService(
-            IConfiguration configuration
+            IConfiguration configuration,
+            IDiscountService discountService
         ) : IPaymentService
     {
-        public async Task<PaymentIntent?> CreateOrUpdatePaymentIntent(ShoppingCart shoppingCart)
+        public async Task<PaymentIntent?> CreateOrUpdatePaymentIntent(ShoppingCart shoppingCart, bool removeDiscount = false)
         {
             StripeConfiguration.ApiKey = configuration["StripeSettings:SecretKey"];
 
@@ -18,12 +19,21 @@ namespace Infrastructure.Services
             var intent = new PaymentIntent();
             var subtotal = shoppingCart.Items.Sum(x => x.Quantity * x.Product.Price);
             var deliveryFee = subtotal > 10000 ? 0 : 500;
+            var discount = 0m;
+
+            if (shoppingCart.Coupon != null)
+            {
+                discount = await discountService.CalculateDiscountFromAmount(shoppingCart.Coupon,
+                subtotal, removeDiscount);
+            }
+
+            var totalAmount = subtotal - discount + deliveryFee;
 
             if (string.IsNullOrEmpty(shoppingCart.PaymentIntentId))
             {
                 var options = new PaymentIntentCreateOptions
                 {
-                    Amount = (long)(subtotal + deliveryFee),
+                    Amount = (long)totalAmount,
                     Currency = "usd",
                     PaymentMethodTypes = ["card"]
                 };
@@ -36,7 +46,7 @@ namespace Infrastructure.Services
             {
                 var options = new PaymentIntentUpdateOptions
                 {
-                    Amount = (long)(subtotal + deliveryFee)
+                    Amount = (long)totalAmount
                 };
                 await service.UpdateAsync(shoppingCart.PaymentIntentId, options);
             }

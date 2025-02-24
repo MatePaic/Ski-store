@@ -5,6 +5,6 @@ namespace Core.Interfaces
 {
     public interface IPaymentService
     {
-        Task<PaymentIntent?> CreateOrUpdatePaymentIntent(ShoppingCart shoppingCart);
+        Task<PaymentIntent?> CreateOrUpdatePaymentIntent(ShoppingCart shoppingCart, bool removeDiscount=false);
     }
 }

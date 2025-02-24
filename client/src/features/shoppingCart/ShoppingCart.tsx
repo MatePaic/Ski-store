@@ -6,9 +6,9 @@ import OrderSummary from "../../app/shared/components/OrderSummary";
 export default function ShoppingCart() {
     const {data, isLoading} = useFetchShoppingCartQuery();
     
-    if (isLoading) return <Typography>Loading basket...</Typography>
+    if (isLoading) return <Typography>Loading cart...</Typography>
 
-    if (!data || data.items.length === 0) return <Typography variant="h3">Your basket is empty</Typography>
+    if (!data || data.items.length === 0) return <Typography variant="h3">Your cart is empty</Typography>
     
     return (
         <Grid2 container spacing={2}>

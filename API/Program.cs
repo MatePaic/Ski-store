@@ -25,6 +25,7 @@ builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddScoped<IPaymentService, PaymentsService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddSingleton<IShoppingCartService, ShoppingCartService>();
+builder.Services.AddSingleton<IDiscountService, DiscountService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<User>(opt =>
