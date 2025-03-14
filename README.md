@@ -52,8 +52,8 @@ Welcome to the Ski & Snowboard E-Commerce Store! This project is a fully functio
 ## Getting Started
 
 ### Prerequisites
-- **.NET SDK** (version 6.0 or later)
-- **Node.js** (version 16 or later)
+- **.NET SDK** (version 9.0 or later)
+- **Node.js** (version 22 or later)
 - **SQL Server** (or another database supported by Entity Framework Core)
 - **Stripe Account** (for payment processing)
 
